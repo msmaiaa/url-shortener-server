@@ -38,15 +38,24 @@ app.post('/url/new', async (req,res)=>{
         if(!req.body.slug || !req.body.url){
             return res.status(500).send({message: 'Error: missing params'})
         }
+        await UrlModel.findOne({slug: req.body.slug})
+        .then((doc)=>{
+            if(doc){
+                return res.status(500).send({message: 'slug already in use'})
+            }            
+        })
+        .catch((err)=>{
+            console.log(err)
+        })
         let sUrl = new UrlModel({url: req.body.url, slug: req.body.slug})
         await sUrl.save()
         .then((url)=>{
-            res.status(200).send(url);
-            console.log(url)
+            return res.status(200).send(url);
         })
         .catch((err)=>{
             return res.status(500).send(err);
         })
+        
     }catch(err){
         return res.status(500).send({message: 'error while trying to create shortened url'})
     }
