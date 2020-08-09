@@ -38,6 +38,7 @@ app.post('/url/new', async (req,res)=>{
         if(!req.body.slug || !req.body.url){
             return res.status(500).send({message: 'Error: missing params'})
         }
+        
         await UrlModel.findOne({slug: req.body.slug})
         .then((doc)=>{
             if(doc){
@@ -47,6 +48,7 @@ app.post('/url/new', async (req,res)=>{
         .catch((err)=>{
             console.log(err)
         })
+
         let sUrl = new UrlModel({url: req.body.url, slug: req.body.slug})
         await sUrl.save()
         .then((url)=>{
